@@ -1,0 +1,186 @@
+#!/bin/bash
+
+first_name=$1
+id_number=$2
+
+[ "$#" -ne 2 ] && echo -e "Invalid input! Please enter your first name and id number respectively." && exit
+if ! [[ "$first_name" =~ ^[a-zA-Z]+$ ]]; 
+then
+echo -e "Username = '$first_name' not accepted. Enter string value only!"
+exit
+elif ! [[ "$id_number" =~ ^[0-9]+$ ]];
+then
+echo -e " Id number = '$id_number' is not accepted. Enter integer values only!"
+exit
+fi
+echo -e "Enter then program name: \c"
+read program
+
+secretkey="dog"
+attempts=5
+
+function panel() {
+if [[ $attempts == 5 ]]
+then
+echo -e "\033[0;96mWelcome to $program\e[0m"
+fi
+echo -e "Please enter secret key: \c"
+read input
+if [[ $input != $secretkey ]]
+then
+((attempts--))
+echo -e "Incorrect secret key!"
+echo -e "$attempts attempts remaining! \n"
+if [[ attempts -gt 0 ]]
+then
+panel
+else
+echo "Sorry $first_name, You have entered incorrect key too many times. Try again later."
+exit
+fi
+fi
+}
+
+function main_page() {
+echo "============================================"
+echo "London ID: $id_number "
+echo "Name: $first_name"
+echo Time: $(date +%r)
+echo Date: $(date +%F)
+echo "============================================"
+echo "----------------------------------------"
+echo -e "\t Code    |    Country        \n"
+echo "----------------------------------------"
+echo -e "\t BRZ     -->     Brazil \n"
+echo -e "\t ARG     -->     Argentina \n"
+echo -e "\t NEP     -->     Nepal \n"
+echo -e "\t CHI     -->     China \n"
+echo -e "\t ENG     -->     England \n"
+echo "----------------------------------------"
+
+function country(){
+echo -e "Choose country code: \c"
+read country
+country=${country^^}
+echo -e "=============================================================================================================================="
+case $country in
+"BRZ")
+echo  "Brazil is not the best team!"
+country
+;;
+"ARG")
+echo "Argentina is not the best team!"
+country
+;;
+"NEP")
+echo "Nepal is one of the most strongest team in south asia. Among 8 other countries, Nepal has beat all of "
+echo "them."
+echo "celebrate in victory. Besides amazing fans, Nepal is one of the most beautiful country in the world."
+;;
+"CHI")
+echo "China is not the best team!"
+country
+;;
+"ENG")
+echo "England is not the best team!"
+country
+;;
+*)
+echo -e "Invalid country code! Please select code form above option. \n"
+country
+;;
+esac
+}
+country
+ echo "================================================================================================================================"
+	echo "-----------------------------------"
+	echo -e "\t Player Code    |    Player \n"
+	echo "-----------------------------------"
+	echo -e "\t LM     -->     Lionel Messi \n"
+	echo -e "\t NJ     -->     Neymar Junior \n"
+	echo -e "\t KC     -->     Kiran Chemjong \n"
+	echo -e	"\t ZZ     -->     Zheng Zhi \n"
+	echo -e "\t HK     -->     Harry Kane \n"
+	echo "-----------------------------------"
+
+function input_players() {
+
+echo -e "Please choose code of best three player from above: \c "
+read player1 player2 player3 limit
+
+if [[ -z $player3 || $limit != "" ]]
+then
+
+echo -e "\033[0;31mPlease choose 3 player code!\e[0m"
+
+input_players
+else
+player1=${player1^^}
+player2=${player2^^}
+player3=${player3^^}
+
+function players() {
+for codes in "$@"
+do
+case $codes in
+"LM" | "NJ" | "KC" | "ZZ" | "HK")
+continue
+;;
+*)
+return 1
+;;
+esac
+done
+return 0
+}
+if players $player1 $player2 $player3;
+then
+if [[ $player1 == $player2 || $player2 == $player3 || $player3 == $player1 ]];
+then
+echo -e "\033[0;31mPlease enter the individual player's code!\e[0m"
+input_players
+fi
+else
+echo -e "\033[0;31mEntered code doesn't match!\e[0m"
+input_players
+fi
+fi
+}
+input_players
+
+echo  "=========================================================================================="
+PS3="Please select one best player from 1 or 2 or 3:"
+select player in "$player1" "$player2" "$player3"
+do
+echo "==========================================================================================="
+if [[ -f "$player" ]];
+then
+cat "$player"
+else
+echo -e "\033[0;31m$player description is not available.\e[0m"
+echo "Please select wisely."
+main_page #return to no.4
+fi
+echo "********************************************************************************************"
+repeat_main_page
+done
+}
+function repeat_main_page() {
+echo -e "Would you like to continue again? (YES/Y or NO/N): \c"
+read response
+response=${response^^}
+case $response in
+"YES" | "Y")
+clear
+main_page
+;;
+*)
+echo "Thanks for checking out."
+exit
+::
+esac
+}
+clear
+panel
+clear
+main_page
